@@ -331,6 +331,71 @@ def delete_slider_admin(
     return {"success": True, "message": "اسلایدر با موفقیت حذف شد"}
 
 
+# ==================== گواهینامه‌ها و استانداردها ====================
+
+@router.get("/certificates", response_model=List[schemas.Certificate])
+def get_all_certificates_admin(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """دریافت همه گواهینامه‌ها و استانداردها (ادمین)"""
+    certificates = db.query(models.Certificate).offset(skip).limit(limit).all()
+    return certificates
+
+
+@router.post("/certificates", response_model=schemas.Certificate, status_code=201)
+def create_certificate_admin(
+    certificate: schemas.CertificateCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """ایجاد گواهینامه یا استاندارد جدید (ادمین)"""
+    db_certificate = models.Certificate(**certificate.dict())
+    db.add(db_certificate)
+    db.commit()
+    db.refresh(db_certificate)
+    return db_certificate
+
+
+@router.put("/certificates/{certificate_id}", response_model=schemas.Certificate)
+def update_certificate_admin(
+    certificate_id: int,
+    certificate: schemas.CertificateUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """ویرایش گواهینامه یا استاندارد (ادمین)"""
+    db_certificate = db.query(models.Certificate).filter(models.Certificate.id == certificate_id).first()
+    if not db_certificate:
+        raise HTTPException(status_code=404, detail="گواهینامه یافت نشد")
+    
+    update_data = certificate.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_certificate, key, value)
+    
+    db.commit()
+    db.refresh(db_certificate)
+    return db_certificate
+
+
+@router.delete("/certificates/{certificate_id}")
+def delete_certificate_admin(
+    certificate_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """حذف گواهینامه یا استاندارد (ادمین)"""
+    db_certificate = db.query(models.Certificate).filter(models.Certificate.id == certificate_id).first()
+    if not db_certificate:
+        raise HTTPException(status_code=404, detail="گواهینامه یافت نشد")
+    
+    db.delete(db_certificate)
+    db.commit()
+    return {"success": True, "message": "گواهینامه با موفقیت حذف شد"}
+
+
 @router.get("/dashboard/stats")
 def get_dashboard_stats(
     db: Session = Depends(get_db),
@@ -342,6 +407,7 @@ def get_dashboard_stats(
     testimonials_count = db.query(models.Testimonial).count()
     contacts_count = db.query(models.Contact).count()
     sliders_count = db.query(models.Slider).count()
+    certificates_count = db.query(models.Certificate).count()
     unread_contacts = db.query(models.Contact).filter(models.Contact.read == False).count()
     pending_testimonials = db.query(models.Testimonial).filter(models.Testimonial.approved == False).count()
     
@@ -351,6 +417,7 @@ def get_dashboard_stats(
         "testimonials": testimonials_count,
         "contacts": contacts_count,
         "sliders": sliders_count,
+        "certificates": certificates_count,
         "unread_contacts": unread_contacts,
         "pending_testimonials": pending_testimonials
     }

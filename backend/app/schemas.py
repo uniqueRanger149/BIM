@@ -125,20 +125,35 @@ class Testimonial(TestimonialBase):
 # ============= Certificate Schemas =============
 
 class CertificateBase(BaseModel):
-    title: str
-    issuer: str
+    title: str = Field(..., min_length=1, max_length=255)
+    issuer: str = Field(..., min_length=1, max_length=255)
     date: Optional[str] = None
-    icon: Optional[str] = None
+    description: Optional[str] = None
+    icon: Optional[str] = "📜"
     color: Optional[str] = None
+    type: Optional[str] = None
+    type_label: Optional[str] = None
 
 
 class CertificateCreate(CertificateBase):
     pass
 
 
+class CertificateUpdate(BaseModel):
+    title: Optional[str] = None
+    issuer: Optional[str] = None
+    date: Optional[str] = None
+    description: Optional[str] = None
+    icon: Optional[str] = None
+    color: Optional[str] = None
+    type: Optional[str] = None
+    type_label: Optional[str] = None
+
+
 class Certificate(CertificateBase):
     id: int
     created_at: datetime
+    updated_at: Optional[datetime] = None
     
     class Config:
         from_attributes = True

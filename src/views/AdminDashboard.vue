@@ -48,6 +48,22 @@
           <p class="stat-number">{{ stats.contacts }}</p>
         </div>
       </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🎬</div>
+        <div class="stat-info">
+          <h3>اسلایدرها</h3>
+          <p class="stat-number">{{ stats.sliders }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📜</div>
+        <div class="stat-info">
+          <h3>گواهینامه‌ها</h3>
+          <p class="stat-number">{{ stats.certificates }}</p>
+        </div>
+      </div>
     </div>
 
     <div class="quick-actions">
@@ -76,6 +92,8 @@ const stats = ref({
   gallery: 0,
   testimonials: 0,
   contacts: 0,
+  sliders: 0,
+  certificates: 0,
   unread_contacts: 0,
   pending_testimonials: 0
 })

@@ -9,6 +9,7 @@ import AdminGallery from '../views/AdminGallery.vue'
 import AdminTestimonials from '../views/AdminTestimonials.vue'
 import AdminContacts from '../views/AdminContacts.vue'
 import AdminSliders from '../views/AdminSliders.vue'
+import AdminCertificates from '../views/AdminCertificates.vue'
 import AdminLayout from '../components/AdminLayout.vue'
 
 // Guard برای احراز هویت ادمین
@@ -83,6 +84,11 @@ const routes = [
         path: 'sliders',
         name: 'AdminSliders',
         component: AdminSliders
+      },
+      {
+        path: 'certificates',
+        name: 'AdminCertificates',
+        component: AdminCertificates
       }
     ]
   }

@@ -75,9 +75,13 @@ class Certificate(Base):
     title = Column(String(255), nullable=False)
     issuer = Column(String(255), nullable=False)
     date = Column(String(50))
-    icon = Column(String(10))
+    description = Column(Text, nullable=True)  # توضیح گسترده
+    icon = Column(String(10), default="📜")
     color = Column(String(50))
+    type = Column(String(50), nullable=True)  # نوع: standard, certificate
+    type_label = Column(String(100), nullable=True)  # برچسب نوع (فارسی)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
 
 class Statistic(Base):

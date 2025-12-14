@@ -503,6 +503,48 @@ export const deleteAdminSlider = async (id) => {
   return response.data
 }
 
+// ============= ADMIN CERTIFICATES API =============
+
+/**
+ * دریافت تمام گواهینامه‌ها (ادمین)
+ * @returns {Promise<Array>} لیست گواهینامه‌ها
+ */
+export const getAdminCertificates = async () => {
+  const response = await apiClient.get('/api/admin/certificates')
+  return response.data
+}
+
+/**
+ * ایجاد گواهینامه جدید (ادمین)
+ * @param {Object} certificateData - اطلاعات گواهینامه
+ * @returns {Promise<Object>} گواهینامه ایجاد شده
+ */
+export const createAdminCertificate = async (certificateData) => {
+  const response = await apiClient.post('/api/admin/certificates', certificateData)
+  return response.data
+}
+
+/**
+ * بروزرسانی گواهینامه (ادمین)
+ * @param {Number} id - شناسه گواهینامه
+ * @param {Object} certificateData - اطلاعات جدید
+ * @returns {Promise<Object>} گواهینامه بروزرسانی شده
+ */
+export const updateAdminCertificate = async (id, certificateData) => {
+  const response = await apiClient.put(`/api/admin/certificates/${id}`, certificateData)
+  return response.data
+}
+
+/**
+ * حذف گواهینامه (ادمین)
+ * @param {Number} id - شناسه گواهینامه
+ * @returns {Promise<Object>} پیام موفقیت
+ */
+export const deleteAdminCertificate = async (id) => {
+  const response = await apiClient.delete(`/api/admin/certificates/${id}`)
+  return response.data
+}
+
 // Export admin service
 export const adminService = {
   login: adminLogin,
@@ -527,7 +569,11 @@ export const adminService = {
   getSliders: getAdminSliders,
   createSlider: createAdminSlider,
   updateSlider: updateAdminSlider,
-  deleteSlider: deleteAdminSlider
+  deleteSlider: deleteAdminSlider,
+  getCertificates: getAdminCertificates,
+  createCertificate: createAdminCertificate,
+  updateCertificate: updateAdminCertificate,
+  deleteCertificate: deleteAdminCertificate
 }
 
 // Export all services as default

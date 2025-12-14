@@ -23,6 +23,9 @@
         <router-link to="/admin/sliders" class="nav-item" :class="{ active: isActive('sliders') }">
           🎬 اسلایدرها
         </router-link>
+        <router-link to="/admin/certificates" class="nav-item" :class="{ active: isActive('certificates') }">
+          📜 گواهینامه‌ها
+        </router-link>
       </nav>
       <div class="sidebar-footer">
         <button @click="handleLogout" class="logout-button">
@@ -61,7 +64,8 @@ const pageTitle = computed(() => {
     'AdminGallery': '🎨 گالری',
     'AdminTestimonials': '⭐ نظرات',
     'AdminContacts': '📧 پیام‌های تماس',
-    'AdminSliders': '🎬 اسلایدرها'
+    'AdminSliders': '🎬 اسلایدرها',
+    'AdminCertificates': '📜 گواهینامه‌ها و استانداردها'
   }
   return titles[route.name] || 'پنل مدیریت'
 })
