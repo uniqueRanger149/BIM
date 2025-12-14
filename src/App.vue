@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, provide, watch } from 'vue'
 import Loader from './components/Loader.vue'
 
 const isDark = ref(false)
@@ -22,6 +22,21 @@ const toggleTheme = () => {
   isDark.value = !isDark.value
   localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
 }
+
+// Watch for theme changes and update document class
+watch(isDark, (newValue) => {
+  if (newValue) {
+    document.documentElement.classList.add('dark-mode')
+  } else {
+    document.documentElement.classList.remove('dark-mode')
+  }
+}, { immediate: true })
+
+// Provide theme state and toggle function to all child components
+provide('theme', {
+  isDark,
+  toggleTheme
+})
 </script>
 
 <style>

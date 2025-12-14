@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { inject } from 'vue'
 import Navbar from '../components/Navbar.vue'
 import Hero from '../components/Hero.vue'
 import Gallery from '../components/Gallery.vue'
@@ -24,19 +24,6 @@ import Certificates from '../components/Certificates.vue'
 import ContactForm from '../components/ContactForm.vue'
 import Footer from '../components/Footer.vue'
 
-const isDark = ref(false)
-
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
-  document.documentElement.classList.toggle('dark-mode', isDark.value)
-}
-
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  isDark.value = savedTheme === 'dark'
-  if (isDark.value) {
-    document.documentElement.classList.add('dark-mode')
-  }
-})
+// Inject theme from App.vue
+const { isDark, toggleTheme } = inject('theme')
 </script>

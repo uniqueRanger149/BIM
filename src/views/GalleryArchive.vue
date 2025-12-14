@@ -1,5 +1,5 @@
 <template>
-  <div class="archive-page">
+  <div class="archive-page" :class="{ 'dark-mode': isDark }">
     <Navbar @toggle-theme="toggleTheme" :is-dark="isDark" />
     
     <section class="archive-hero">
@@ -191,11 +191,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, inject } from 'vue'
 import Navbar from '../components/Navbar.vue'
 import Footer from '../components/Footer.vue'
 
-const isDark = ref(false)
+// Inject theme from App.vue
+const { isDark, toggleTheme } = inject('theme')
+
 const searchQuery = ref('')
 const selectedCategory = ref('همه')
 const viewMode = ref('grid')
@@ -320,12 +322,6 @@ const galleryItems = ref([
   }
 ])
 
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
-  document.documentElement.classList.toggle('dark-mode', isDark.value)
-}
-
 const filteredItems = computed(() => {
   let filtered = galleryItems.value
 
@@ -388,6 +384,11 @@ onMounted(() => {
 <style scoped>
 .archive-page {
   min-height: 100vh;
+  background: white;
+}
+
+.dark-mode.archive-page {
+  background: #1a1a1a;
 }
 
 .archive-hero {
@@ -444,6 +445,11 @@ onMounted(() => {
 
 .archive-content {
   padding: 4rem 0;
+  background: white;
+}
+
+.dark-mode .archive-content {
+  background: #1a1a1a;
 }
 
 .archive-controls {
