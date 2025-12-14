@@ -8,10 +8,10 @@
         </div>
         
         <ul class="nav-links" :class="{ 'active': mobileMenuOpen }">
-          <li><a href="#home" class="nav-link" @click="closeMobileMenu">خانه</a></li>
-          <li><a href="#gallery" class="nav-link" @click="closeMobileMenu">گالری</a></li>
-          <li><a href="#articles" class="nav-link" @click="closeMobileMenu">مقالات</a></li>
-          <li><a href="#contact" class="nav-link" @click="closeMobileMenu">تماس</a></li>
+          <li><router-link to="/" class="nav-link" @click="handleNavClick('#home')">خانه</router-link></li>
+          <li><a href="#" class="nav-link" @click.prevent="handleNavClick('#gallery')">گالری</a></li>
+          <li><a href="#" class="nav-link" @click.prevent="handleNavClick('#articles')">مقالات</a></li>
+          <li><a href="#" class="nav-link" @click.prevent="handleNavClick('#contact')">تماس</a></li>
         </ul>
 
         <div class="nav-actions">
@@ -37,6 +37,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 defineProps({
   isDark: Boolean
@@ -44,6 +45,8 @@ defineProps({
 
 defineEmits(['toggle-theme'])
 
+const router = useRouter()
+const route = useRoute()
 const mobileMenuOpen = ref(false)
 
 const toggleMobileMenu = () => {
@@ -52,6 +55,28 @@ const toggleMobileMenu = () => {
 
 const closeMobileMenu = () => {
   mobileMenuOpen.value = false
+}
+
+const handleNavClick = (hash) => {
+  closeMobileMenu()
+  
+  // اگر در صفحه اصلی نیستیم، اول به صفحه اصلی برویم
+  if (route.path !== '/') {
+    router.push('/').then(() => {
+      setTimeout(() => {
+        const element = document.querySelector(hash)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 100)
+    })
+  } else {
+    // اگر در صفحه اصلی هستیم، مستقیم اسکرول کنیم
+    const element = document.querySelector(hash)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 }
 </script>
 

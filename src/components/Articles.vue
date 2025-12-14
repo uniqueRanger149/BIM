@@ -12,6 +12,10 @@
       <div class="section-header">
         <h2 class="section-title">آخرین مقالات</h2>
         <p class="section-subtitle">آموزش‌ها و اخبار روز دنیای تکنولوژی</p>
+        <router-link v-if="showViewAll" to="/articles" class="view-all-btn">
+          مشاهده همه مقالات
+          <span class="btn-icon">→</span>
+        </router-link>
       </div>
       
       <!-- Filters and Search -->
@@ -34,7 +38,8 @@
             class="filter-tab"
             :class="{ active: selectedCategory === category }"
           >
-            {{ category }}
+            <span class="filter-text">{{ category }}</span>
+            <span v-if="selectedCategory === category" class="active-indicator"></span>
           </button>
         </div>
         
@@ -53,7 +58,7 @@
       </div>
       
       <!-- Articles Grid -->
-      <div class="articles-grid">
+      <TransitionGroup name="articles-list" tag="div" class="articles-grid">
         <article 
           v-for="article in paginatedArticles" 
           :key="article.id" 
@@ -94,7 +99,7 @@
             </div>
           </div>
         </article>
-      </div>
+      </TransitionGroup>
       
       <!-- Load More / Pagination -->
       <div v-if="filteredArticles.length > articlesPerPage" class="pagination-section">
@@ -118,6 +123,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 import ArticleDetail from './ArticleDetail.vue'
+
+const props = defineProps({
+  showViewAll: {
+    type: Boolean,
+    default: false
+  }
+})
 
 const articles = ref([
   {
@@ -297,7 +309,8 @@ const totalPages = computed(() => {
 
 const paginatedArticles = computed(() => {
   const end = currentPage.value * articlesPerPage
-  return filteredArticles.value.slice(0, end)
+  const items = filteredArticles.value.slice(0, end)
+  return props.showViewAll ? items.slice(0, 6) : items
 })
 
 const loadMore = () => {
@@ -329,6 +342,7 @@ const closeArticle = () => {
 .section-header {
   text-align: center;
   margin-bottom: 4rem;
+  position: relative;
 }
 
 .section-title {
@@ -349,6 +363,34 @@ const closeArticle = () => {
 
 .dark-mode .section-subtitle {
   color: #a0a0a0;
+}
+
+.view-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.view-all-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-icon {
+  transition: transform 0.3s ease;
+}
+
+.view-all-btn:hover .btn-icon {
+  transform: translateX(5px);
 }
 
 .articles-controls {
@@ -409,8 +451,25 @@ const closeArticle = () => {
   border-radius: 50px;
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   font-size: 0.9rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.filter-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.filter-tab:hover::before {
+  left: 100%;
 }
 
 .dark-mode .filter-tab {
@@ -419,15 +478,47 @@ const closeArticle = () => {
   color: white;
 }
 
+.filter-text {
+  position: relative;
+  z-index: 1;
+}
+
+.active-indicator {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 3px;
+  background: white;
+  border-radius: 3px 3px 0 0;
+  animation: indicator-slide 0.4s ease;
+}
+
+@keyframes indicator-slide {
+  from {
+    width: 0%;
+    opacity: 0;
+  }
+  to {
+    width: 80%;
+    opacity: 1;
+  }
+}
+
 .filter-tab.active {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-color: transparent;
   color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
 .filter-tab:hover:not(.active) {
   border-color: #667eea;
   color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 .sort-dropdown {
@@ -481,11 +572,30 @@ const closeArticle = () => {
   background: white;
   border-radius: 20px;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  position: relative;
+}
+
+.article-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.article-card:hover::before {
+  opacity: 1;
 }
 
 .dark-mode .article-card {
@@ -494,12 +604,13 @@ const closeArticle = () => {
 }
 
 .article-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(102, 126, 234, 0.25), 0 10px 20px rgba(0, 0, 0, 0.1);
+  border-color: rgba(102, 126, 234, 0.3);
 }
 
 .dark-mode .article-card:hover {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 10px 20px rgba(102, 126, 234, 0.2);
 }
 
 .article-image {
@@ -509,7 +620,32 @@ const closeArticle = () => {
   justify-content: center;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
+}
+
+.article-card:hover .article-image {
+  transform: scale(1.1);
+}
+
+.article-image::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: rotate(45deg);
+  transition: all 0.6s ease;
+}
+
+.article-card:hover .article-image::before {
+  left: 100%;
 }
 
 @media (max-width: 640px) {
@@ -526,6 +662,13 @@ const closeArticle = () => {
   font-size: 4rem;
   position: relative;
   z-index: 1;
+  transition: all 0.4s ease;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+}
+
+.article-card:hover .article-icon {
+  transform: scale(1.15) rotate(5deg);
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
 }
 
 .article-category {
@@ -538,6 +681,15 @@ const closeArticle = () => {
   border-radius: 50px;
   font-weight: 600;
   font-size: 0.85rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 2;
+}
+
+.article-card:hover .article-category {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .featured-badge {
@@ -551,6 +703,22 @@ const closeArticle = () => {
   font-weight: 700;
   font-size: 0.8rem;
   box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+  transition: all 0.3s ease;
+  animation: pulse-badge 2s ease-in-out infinite;
+  z-index: 2;
+}
+
+@keyframes pulse-badge {
+  0%, 100% {
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+  }
+}
+
+.article-card:hover .featured-badge {
+  transform: scale(1.05);
 }
 
 .article-content {
@@ -558,6 +726,8 @@ const closeArticle = () => {
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 }
 
 .article-meta {
@@ -567,6 +737,16 @@ const closeArticle = () => {
   font-size: 0.85rem;
   color: #6c757d;
   flex-wrap: wrap;
+}
+
+.article-meta > span {
+  transition: all 0.3s ease;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+}
+
+.article-card:hover .article-meta > span {
+  background: rgba(102, 126, 234, 0.05);
 }
 
 .dark-mode .article-meta {
@@ -587,10 +767,15 @@ const closeArticle = () => {
   margin-bottom: 1rem;
   color: #1a1a1a;
   line-height: 1.4;
+  transition: all 0.3s ease;
 }
 
 .dark-mode .article-title {
   color: #ffffff;
+}
+
+.article-card:hover .article-title {
+  color: #667eea;
 }
 
 .article-excerpt {
@@ -619,6 +804,12 @@ const closeArticle = () => {
   font-size: 0.75rem;
   color: #667eea;
   font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tag-mini:hover {
+  background: rgba(102, 126, 234, 0.2);
+  transform: translateY(-2px);
 }
 
 .article-footer {
@@ -649,16 +840,28 @@ const closeArticle = () => {
   justify-content: center;
   color: white;
   font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.article-card:hover .author-avatar {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
 }
 
 .author-name {
   font-size: 0.95rem;
   font-weight: 500;
   color: #1a1a1a;
+  transition: all 0.3s ease;
 }
 
 .dark-mode .author-name {
   color: #ffffff;
+}
+
+.article-card:hover .author-name {
+  color: #667eea;
 }
 
 .read-more {
@@ -669,18 +872,34 @@ const closeArticle = () => {
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  background: rgba(102, 126, 234, 0.1);
 }
 
 .read-more:hover {
   gap: 1rem;
+  background: rgba(102, 126, 234, 0.2);
+  transform: translateX(-3px);
 }
 
 .arrow {
   transition: transform 0.3s ease;
+  display: inline-block;
 }
 
 .read-more:hover .arrow {
   transform: translateX(-5px);
+  animation: arrow-bounce 0.6s ease-in-out infinite;
+}
+
+@keyframes arrow-bounce {
+  0%, 100% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(-10px);
+  }
 }
 
 .pagination-section {
@@ -744,6 +963,27 @@ const closeArticle = () => {
 .slide-fade-leave-to {
   transform: translateX(20px);
   opacity: 0;
+}
+
+/* Articles List Transitions */
+.articles-list-move,
+.articles-list-enter-active,
+.articles-list-leave-active {
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.articles-list-enter-from {
+  opacity: 0;
+  transform: scale(0.8) translateY(30px) rotateX(20deg);
+}
+
+.articles-list-leave-to {
+  opacity: 0;
+  transform: scale(0.8) translateY(-30px);
+}
+
+.articles-list-leave-active {
+  position: absolute;
 }
 
 @media (max-width: 1024px) {

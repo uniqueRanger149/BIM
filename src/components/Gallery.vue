@@ -4,6 +4,10 @@
       <div class="section-header">
         <h2 class="section-title">نمونه کارهای ما</h2>
         <p class="section-subtitle">پورتفولیو و پروژه‌های موفق ما</p>
+        <router-link v-if="showViewAll" to="/gallery" class="view-all-btn">
+          مشاهده همه پروژه‌ها
+          <span class="btn-icon">→</span>
+        </router-link>
       </div>
       
       <!-- Search and Filter -->
@@ -33,14 +37,14 @@
       <!-- Gallery Grid -->
       <TransitionGroup name="gallery-list" tag="div" class="gallery-grid">
         <div 
-          v-for="item in filteredItems" 
+          v-for="item in displayItems" 
           :key="item.id" 
           class="gallery-card"
           @click="openModal(item)"
         >
           <div class="card-image" :style="{ background: item.gradient }">
+            <div class="card-icon-main">{{ item.icon }}</div>
             <div class="card-overlay">
-              <div class="card-icon">{{ item.icon }}</div>
               <div class="overlay-content">
                 <span class="view-btn">مشاهده پروژه</span>
               </div>
@@ -161,6 +165,13 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+
+const props = defineProps({
+  showViewAll: {
+    type: Boolean,
+    default: false
+  }
+})
 
 const galleryItems = ref([
   {
@@ -447,6 +458,10 @@ const filteredItems = computed(() => {
   return items
 })
 
+const displayItems = computed(() => {
+  return props.showViewAll ? filteredItems.value.slice(0, 6) : filteredItems.value
+})
+
 const currentIndex = computed(() => 
   selectedItem.value ? galleryItems.value.findIndex(item => item.id === selectedItem.value.id) : 0
 )
@@ -602,6 +617,7 @@ const previousItem = () => {
 .section-header {
   text-align: center;
   margin-bottom: 4rem;
+  position: relative;
 }
 
 .section-title {
@@ -622,6 +638,34 @@ const previousItem = () => {
 
 .dark-mode .section-subtitle {
   color: #a0a0a0;
+}
+
+.view-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.view-all-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-icon {
+  transition: transform 0.3s ease;
+}
+
+.view-all-btn:hover .btn-icon {
+  transform: translateX(5px);
 }
 
 .gallery-grid {
@@ -665,6 +709,21 @@ const previousItem = () => {
   justify-content: center;
 }
 
+.card-icon-main {
+  font-size: 6rem;
+  z-index: 1;
+  position: relative;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+  transition: all 0.4s ease;
+  opacity: 1;
+}
+
+.gallery-card:hover .card-icon-main {
+  transform: scale(1.15) rotate(5deg);
+  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.4));
+  opacity: 0.2;
+}
+
 .card-overlay {
   position: absolute;
   inset: 0;
@@ -675,21 +734,12 @@ const previousItem = () => {
   justify-content: center;
   opacity: 0;
   transition: all 0.3s ease;
+  z-index: 2;
 }
 
 .gallery-card:hover .card-overlay {
   opacity: 1;
   backdrop-filter: blur(5px);
-}
-
-.card-icon {
-  font-size: 5rem;
-  transition: all 0.4s ease;
-}
-
-.gallery-card:hover .card-icon {
-  transform: scale(1.2);
-  filter: blur(4px);
 }
 
 .overlay-content {
@@ -1217,7 +1267,7 @@ const previousItem = () => {
     height: 220px;
   }
   
-  .card-icon {
+  .card-icon-main {
     font-size: 4rem;
   }
   

@@ -89,40 +89,47 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
   z-index: 10000;
   overflow-y: auto;
   animation: fadeIn 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem;
 }
 
 .article-detail {
   background: white;
-  min-height: 100vh;
+  width: 100%;
   max-width: 900px;
-  margin: 0 auto;
+  border-radius: 25px;
   position: relative;
-  animation: slideUp 0.3s ease;
+  animation: slideUp 0.4s ease;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  margin: 0 auto;
 }
 
 .dark-mode .article-detail-overlay {
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95);
 }
 
 .dark-mode .article-detail {
-  background: #1a1a1a;
+  background: #2d2d2d;
 }
 
 .back-button {
-  position: sticky;
-  top: 1rem;
-  right: 2rem;
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: white;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
   border-radius: 50px;
   cursor: pointer;
   font-weight: 600;
@@ -130,14 +137,12 @@ onUnmounted(() => {
   transition: all 0.3s ease;
   z-index: 100;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  margin: 1rem 2rem 0 auto;
-  float: left;
+  backdrop-filter: blur(10px);
 }
 
 .dark-mode .back-button {
-  background: #2d2d2d;
+  background: rgba(45, 45, 45, 0.95);
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .back-button:hover {
@@ -145,16 +150,43 @@ onUnmounted(() => {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  border-color: transparent;
 }
 
 .article-header {
-  height: 400px;
+  width: 100%;
+  height: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
+}
+
+.article-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 .article-category-badge {
@@ -167,10 +199,26 @@ onUnmounted(() => {
   border-radius: 50px;
   font-weight: 600;
   font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  z-index: 2;
 }
 
 .article-icon-large {
-  font-size: 6rem;
+  font-size: 8rem;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+  animation: float 3s ease-in-out infinite;
+  z-index: 1;
+  position: relative;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.05);
+  }
 }
 
 .article-body {
@@ -421,31 +469,55 @@ onUnmounted(() => {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .article-detail-overlay {
+    padding: 1rem;
+  }
+  
   .article-detail {
-    margin: 0;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .article-detail-overlay {
+    padding: 0;
+    align-items: flex-start;
+  }
+  
+  .article-detail {
     border-radius: 0;
+    min-height: 100vh;
   }
   
   .back-button {
-    position: sticky;
-    top: 0.5rem;
-    right: 1rem;
-    margin: 0.5rem 1rem 0 auto;
+    top: 1rem;
+    left: 1rem;
     padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
   }
   
   .article-header {
-    height: 300px;
+    height: 250px;
+  }
+  
+  .article-category-badge {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
   }
   
   .article-icon-large {
-    font-size: 4rem;
+    font-size: 5rem;
   }
   
   .article-body {
     padding: 2rem 1.5rem;
+  }
+  
+  .article-meta {
+    gap: 1rem;
   }
   
   .article-title {
@@ -467,6 +539,42 @@ onUnmounted(() => {
   
   .lead {
     font-size: 1.1rem;
+  }
+  
+  .share-buttons {
+    flex-direction: column;
+  }
+  
+  .share-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .article-author-section {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-header {
+    height: 200px;
+  }
+  
+  .article-icon-large {
+    font-size: 4rem;
+  }
+  
+  .article-body {
+    padding: 1.5rem 1rem;
+  }
+  
+  .article-title {
+    font-size: 1.5rem;
+  }
+  
+  .article-meta {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
 </style>
