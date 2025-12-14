@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import hashlib
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -10,21 +10,20 @@ from app.config import settings
 from app.database import get_db
 from app import models, schemas
 
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 # OAuth2 scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """بررسی صحت پسورد"""
-    return pwd_context.verify(plain_password, hashed_password)
+    # استفاده از SHA-256 برای سادگی
+    hashed = hashlib.sha256(plain_password.encode()).hexdigest()
+    return hashed == hashed_password
 
 
 def get_password_hash(password: str) -> str:
-    """هش کردن پسورد"""
-    return pwd_context.hash(password)
+    """هش کردن پسورد با SHA-256"""
+    return hashlib.sha256(password.encode()).hexdigest()
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
