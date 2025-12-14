@@ -70,7 +70,7 @@ app.add_middleware(
 )
 
 # Mount static files directory
-uploads_dir = Path(__file__).parent.parent / "backend" / "uploads"
+uploads_dir = Path(__file__).parent / "uploads"
 uploads_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 

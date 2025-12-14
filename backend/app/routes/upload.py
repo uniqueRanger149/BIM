@@ -13,10 +13,7 @@ from app import models, auth
 router = APIRouter(prefix="/api/upload", tags=["Upload"])
 
 # مسیر ذخیره فایل‌ها
-from pathlib import Path as PathlibPath
-import os as path_os
-current_dir = PathlibPath(__file__).parent.parent.parent
-UPLOAD_DIR = current_dir / "backend" / "uploads"
+UPLOAD_DIR = Path(__file__).parent.parent.parent / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # انواع فایل مجاز
@@ -56,8 +53,9 @@ def save_upload_file(upload_file: UploadFile) -> str:
             detail=f"خطا در ذخیره فایل: {str(e)}"
         )
     
-    # برگرداندن URL نسبی
-    return f"/uploads/{unique_filename}"
+    # برگرداندن URL مطلق
+    backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
+    return f"{backend_url}/uploads/{unique_filename}"
 
 
 @router.post("", response_model=dict)
