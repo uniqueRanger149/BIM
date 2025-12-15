@@ -408,6 +408,7 @@ def get_dashboard_stats(
     contacts_count = db.query(models.Contact).count()
     sliders_count = db.query(models.Slider).count()
     certificates_count = db.query(models.Certificate).count()
+    services_count = db.query(models.Service).count()
     unread_contacts = db.query(models.Contact).filter(models.Contact.read == False).count()
     pending_testimonials = db.query(models.Testimonial).filter(models.Testimonial.approved == False).count()
     
@@ -418,6 +419,74 @@ def get_dashboard_stats(
         "contacts": contacts_count,
         "sliders": sliders_count,
         "certificates": certificates_count,
+        "services": services_count,
         "unread_contacts": unread_contacts,
         "pending_testimonials": pending_testimonials
     }
+
+
+# ==================== خدمات ====================
+
+@router.get("/services", response_model=List[schemas.Service])
+def get_all_services_admin(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """دریافت همه خدمات (ادمین)"""
+    services = db.query(models.Service).order_by(models.Service.order).offset(skip).limit(limit).all()
+    return services
+
+
+@router.post("/services", response_model=schemas.Service, status_code=201)
+def create_service_admin(
+    service: schemas.ServiceCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """ایجاد خدمت جدید (ادمین)"""
+    db_service = models.Service(**service.dict())
+    db.add(db_service)
+    db.commit()
+    db.refresh(db_service)
+    return db_service
+
+
+@router.put("/services/{service_id}", response_model=schemas.Service)
+def update_service_admin(
+    service_id: int,
+    service: schemas.ServiceUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """ویرایش خدمت (ادمین)"""
+    db_service = db.query(models.Service).filter(models.Service.id == service_id).first()
+    
+    if not db_service:
+        raise HTTPException(status_code=404, detail="Service not found")
+    
+    update_data = service.dict(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(db_service, field, value)
+    
+    db.commit()
+    db.refresh(db_service)
+    return db_service
+
+
+@router.delete("/services/{service_id}")
+def delete_service_admin(
+    service_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """حذف خدمت (ادمین)"""
+    db_service = db.query(models.Service).filter(models.Service.id == service_id).first()
+    
+    if not db_service:
+        raise HTTPException(status_code=404, detail="Service not found")
+    
+    db.delete(db_service)
+    db.commit()
+    return {"message": "Service deleted successfully"}

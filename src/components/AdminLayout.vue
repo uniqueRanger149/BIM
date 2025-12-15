@@ -33,6 +33,9 @@
         <router-link to="/admin/certificates" class="nav-item" :class="{ active: isActive('certificates') }" @click="closeSidebar">
           📜 گواهینامه‌ها
         </router-link>
+        <router-link to="/admin/services" class="nav-item" :class="{ active: isActive('services') }" @click="closeSidebar">
+          🎯 خدمات
+        </router-link>
       </nav>
       <div class="sidebar-footer">
         <button @click="handleLogout" class="logout-button">

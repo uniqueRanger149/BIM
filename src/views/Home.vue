@@ -2,6 +2,7 @@
   <div>
     <Navbar @toggle-theme="toggleTheme" :is-dark="isDark" />
     <Hero />
+    <Services />
     <Gallery :show-view-all="true" />
     <Statistics />
     <Articles :show-view-all="true" />
@@ -16,6 +17,7 @@
 import { inject } from 'vue'
 import Navbar from '../components/Navbar.vue'
 import Hero from '../components/Hero.vue'
+import Services from '../components/Services.vue'
 import Gallery from '../components/Gallery.vue'
 import Statistics from '../components/Statistics.vue'
 import Articles from '../components/Articles.vue'

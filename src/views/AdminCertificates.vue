@@ -134,6 +134,45 @@
               </div>
 
               <div class="form-group">
+                <label for="cert-gradient">Gradient</label>
+                <input
+                  id="cert-gradient"
+                  v-model="formData.gradient"
+                  type="text"
+                  placeholder="مثلاً: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="cert-image">تصویر شاخص</label>
+                <div class="image-upload-group">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    @change="handleImageUpload"
+                    :disabled="uploading"
+                    class="file-input"
+                  />
+                  <div v-if="uploading" class="upload-status">در حال آپلود...</div>
+                  <div v-if="formData.image" class="image-preview">
+                    <img :src="formData.image" alt="پیش‌نمایش" />
+                    <button type="button" @click="formData.image = ''" class="btn-remove-image">×</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="cert-slider">اسلایدر</label>
+                <select id="cert-slider" v-model.number="formData.slider_id">
+                  <option :value="null">بدون اسلایدر</option>
+                  <option v-for="slider in sliders" :key="slider.id" :value="slider.id">
+                    {{ slider.name }} ({{ slider.images?.length || 0 }} تصویر)
+                  </option>
+                </select>
+                <small class="form-hint">برای نمایش چندین تصویر به صورت اسلایدر</small>
+              </div>
+
+              <div class="form-group">
                 <label for="cert-type-label">برچسب نوع (متن)</label>
                 <input
                   id="cert-type-label"
@@ -189,7 +228,9 @@ import { ref, onMounted } from 'vue'
 import { adminService } from '../api/services'
 
 const certificates = ref([])
+const sliders = ref([])
 const loading = ref(true)
+const uploading = ref(false)
 const showDialog = ref(false)
 const showConfirm = ref(false)
 const editingId = ref(null)
@@ -202,6 +243,9 @@ const formData = ref({
   description: '',
   icon: '📜',
   color: '#667eea',
+  gradient: '',
+  image: '',
+  slider_id: null,
   type: '',
   type_label: ''
 })
@@ -214,6 +258,9 @@ const resetForm = () => {
     description: '',
     icon: '📜',
     color: '#667eea',
+    gradient: '',
+    image: '',
+    slider_id: null,
     type: '',
     type_label: ''
   }
@@ -234,6 +281,9 @@ const editCertificate = (cert) => {
     description: cert.description || '',
     icon: cert.icon || '📜',
     color: cert.color || '#667eea',
+    gradient: cert.gradient || '',
+    image: cert.image || '',
+    slider_id: cert.slider_id || null,
     type: cert.type || '',
     type_label: cert.type_label || ''
   }
@@ -292,8 +342,35 @@ const fetchCertificates = async () => {
   }
 }
 
+const fetchSliders = async () => {
+  try {
+    const response = await adminService.getSliders()
+    sliders.value = Array.isArray(response) ? response : response.data || []
+  } catch (error) {
+    console.error('خطا در دریافت اسلایدرها:', error)
+    sliders.value = []
+  }
+}
+
+const handleImageUpload = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  try {
+    uploading.value = true
+    const uploadedUrl = await adminService.uploadImage(file)
+    formData.value.image = uploadedUrl
+  } catch (error) {
+    console.error('خطا در آپلود تصویر:', error)
+    alert('خطا در آپلود تصویر. لطفاً دوباره سعی کنید.')
+  } finally {
+    uploading.value = false
+  }
+}
+
 onMounted(() => {
   fetchCertificates()
+  fetchSliders()
 })
 </script>
 
@@ -603,6 +680,84 @@ onMounted(() => {
 
 .form-group textarea {
   resize: vertical;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.image-upload-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.file-input {
+  padding: 0.5rem;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-input:hover:not(:disabled) {
+  border-color: #667eea;
+  background: #f8f9ff;
+}
+
+.file-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.upload-status {
+  padding: 0.5rem;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.image-preview {
+  position: relative;
+  width: fit-content;
+}
+
+.image-preview img {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.btn-remove-image {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f44336;
+  color: white;
+  border: 2px solid white;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-remove-image:hover {
+  background: #d32f2f;
+  transform: scale(1.1);
 }
 
 .form-actions {

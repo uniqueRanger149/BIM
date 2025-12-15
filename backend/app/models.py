@@ -78,6 +78,10 @@ class Certificate(Base):
     description = Column(Text, nullable=True)  # توضیح گسترده
     icon = Column(String(10), default="📜")
     color = Column(String(50))
+    gradient = Column(String(255))
+    # تصاویر
+    image = Column(String(500), nullable=True)  # تصویر شاخص
+    slider_id = Column(Integer, nullable=True)  # اسلایدر (بجای images)
     type = Column(String(50), nullable=True)  # نوع: standard, certificate
     type_label = Column(String(100), nullable=True)  # برچسب نوع (فارسی)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -116,6 +120,26 @@ class Newsletter(Base):
     email = Column(String(255), unique=True, nullable=False, index=True)
     active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class Service(Base):
+    """مدل خدمات"""
+    __tablename__ = "services"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    description = Column(Text)
+    icon = Column(String(10), default='🎯')
+    color = Column(String(50), default='#667eea')
+    gradient = Column(String(255))
+    image = Column(String(500), nullable=True)
+    slider_id = Column(Integer, nullable=True)
+    features = Column(JSON, nullable=True, default=[])  # لیست ویژگی‌ها
+    price = Column(String(100), nullable=True)  # قیمت به صورت متن
+    order = Column(Integer, default=0)
+    active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
 
 class Slider(Base):

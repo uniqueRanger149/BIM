@@ -590,6 +590,46 @@ export const deleteAdminCertificate = async (id) => {
   return response.data
 }
 
+/**
+ * دریافت همه خدمات (ادمین)
+ * @returns {Promise<Array>} لیست خدمات
+ */
+export const getAdminServices = async () => {
+  const response = await apiClient.get('/api/admin/services')
+  return response.data
+}
+
+/**
+ * ایجاد خدمت جدید (ادمین)
+ * @param {Object} serviceData - داده‌های خدمت
+ * @returns {Promise<Object>} خدمت ایجادشده
+ */
+export const createAdminService = async (serviceData) => {
+  const response = await apiClient.post('/api/admin/services', serviceData)
+  return response.data
+}
+
+/**
+ * بروزرسانی خدمت (ادمین)
+ * @param {Number} id - شناسه خدمت
+ * @param {Object} serviceData - داده‌های جدید
+ * @returns {Promise<Object>} خدمت بروزرسانی شده
+ */
+export const updateAdminService = async (id, serviceData) => {
+  const response = await apiClient.put(`/api/admin/services/${id}`, serviceData)
+  return response.data
+}
+
+/**
+ * حذف خدمت (ادمین)
+ * @param {Number} id - شناسه خدمت
+ * @returns {Promise<Object>} نتیجه
+ */
+export const deleteAdminService = async (id) => {
+  const response = await apiClient.delete(`/api/admin/services/${id}`)
+  return response.data
+}
+
 // Export admin service
 export const adminService = {
   login: adminLogin,
@@ -618,7 +658,13 @@ export const adminService = {
   getCertificates: getAdminCertificates,
   createCertificate: createAdminCertificate,
   updateCertificate: updateAdminCertificate,
-  deleteCertificate: deleteAdminCertificate
+  deleteCertificate: deleteAdminCertificate,
+  
+  // Services
+  getServices: getAdminServices,
+  createService: createAdminService,
+  updateService: updateAdminService,
+  deleteService: deleteAdminService
 }
 
 // Export all services as default

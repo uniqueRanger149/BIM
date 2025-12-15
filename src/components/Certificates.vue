@@ -13,9 +13,13 @@
           class="certificate-card"
           @click="openCertificate(cert)"
         >
-          <div class="certificate-image" :style="{ background: cert.gradient }">
-            <span class="certificate-icon">{{ cert.icon }}</span>
-          </div>
+          <ImageSlider
+            :image="cert.image"
+            :images="cert.images"
+            :icon="cert.icon"
+            :gradient="cert.gradient"
+            class="certificate-image"
+          />
           <div class="certificate-info">
             <h3 class="certificate-title">{{ cert.title }}</h3>
             <p class="certificate-issuer">{{ cert.issuer }}</p>
@@ -312,6 +316,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
 }
 
 .certificate-icon {

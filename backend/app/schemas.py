@@ -131,6 +131,9 @@ class CertificateBase(BaseModel):
     description: Optional[str] = None
     icon: Optional[str] = "📜"
     color: Optional[str] = None
+    gradient: Optional[str] = None
+    image: Optional[str] = None
+    slider_id: Optional[int] = None
     type: Optional[str] = None
     type_label: Optional[str] = None
 
@@ -146,6 +149,9 @@ class CertificateUpdate(BaseModel):
     description: Optional[str] = None
     icon: Optional[str] = None
     color: Optional[str] = None
+    gradient: Optional[str] = None
+    image: Optional[str] = None
+    slider_id: Optional[int] = None
     type: Optional[str] = None
     type_label: Optional[str] = None
 
@@ -248,6 +254,49 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+
+# ============= Service Schemas =============
+
+class ServiceBase(BaseModel):
+    title: str = Field(..., min_length=1, max_length=255)
+    description: str
+    icon: str = "🎯"
+    color: str = "#667eea"
+    gradient: Optional[str] = None
+    image: Optional[str] = None
+    slider_id: Optional[int] = None
+    features: List[str] = []
+    price: Optional[str] = None
+    order: int = 0
+    active: bool = True
+
+
+class ServiceCreate(ServiceBase):
+    pass
+
+
+class ServiceUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    icon: Optional[str] = None
+    color: Optional[str] = None
+    gradient: Optional[str] = None
+    image: Optional[str] = None
+    slider_id: Optional[int] = None
+    features: Optional[List[str]] = None
+    price: Optional[str] = None
+    order: Optional[int] = None
+    active: Optional[bool] = None
+
+
+class Service(ServiceBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
 
 
 # ============= Slider Schemas =============

@@ -89,6 +89,11 @@ const routes = [
         path: 'certificates',
         name: 'AdminCertificates',
         component: AdminCertificates
+      },
+      {
+        path: 'services',
+        name: 'AdminServices',
+        component: () => import('../views/AdminServices.vue')
       }
     ]
   }

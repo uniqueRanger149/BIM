@@ -113,6 +113,18 @@ def get_slider(slider_id: int, db: Session = Depends(get_db)):
     return {"data": slider_data}
 
 
+@router.get("/services", response_model=dict)
+def get_services(db: Session = Depends(get_db)):
+    """دریافت خدمات فعال"""
+    services = db.query(models.Service)\
+        .filter(models.Service.active == True)\
+        .order_by(models.Service.order)\
+        .all()
+    
+    services_data = [schemas.Service.from_orm(s) for s in services]
+    return {"data": services_data}
+
+
 @router.get("/statistics", response_model=dict)
 def get_statistics(db: Session = Depends(get_db)):
     """دریافت آمار سایت"""
