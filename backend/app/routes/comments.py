@@ -11,6 +11,33 @@ from app.auth import get_current_user
 router = APIRouter(prefix="/api/comments", tags=["Comments"])
 
 
+@router.get("/stats/summary")
+def get_comment_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """دریافت آمار نظرات (فقط ادمین)"""
+    
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="دسترسی ممنوع")
+    
+    total_comments = db.query(Comment).count()
+    approved_comments = db.query(Comment).filter(Comment.approved == True).count()
+    pending_comments = db.query(Comment).filter(Comment.approved == False).count()
+    
+    # میانگین امتیاز
+    avg_rating = db.query(Comment).filter(Comment.approved == True).with_entities(
+        db.func.avg(Comment.rating)
+    ).scalar() or 0
+    
+    return {
+        "total": total_comments,
+        "approved": approved_comments,
+        "pending": pending_comments,
+        "average_rating": round(float(avg_rating), 2)
+    }
+
+
 @router.get("/", response_model=List[CommentSchema])
 def get_comments(
     content_type: Optional[str] = Query(None, pattern="^(article|project)$"),
@@ -86,33 +113,6 @@ def create_comment(comment: CommentCreate, db: Session = Depends(get_db)):
     return db_comment
 
 
-@router.put("/{comment_id}/approve", response_model=CommentSchema)
-def approve_comment(
-    comment_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    """تایید یا رد نظر (فقط ادمین)"""
-    
-    # بررسی دسترسی ادمین
-    if not current_user.is_admin:
-        raise HTTPException(status_code=403, detail="دسترسی ممنوع")
-    
-    # پیدا کردن نظر
-    comment = db.query(Comment).filter(Comment.id == comment_id).first()
-    if not comment:
-        raise HTTPException(status_code=404, detail="نظر یافت نشد")
-    
-    # تغییر وضعیت تایید
-    comment.approved = not comment.approved
-    comment.updated_at = datetime.utcnow()
-    
-    db.commit()
-    db.refresh(comment)
-    
-    return comment
-
-
 @router.put("/{comment_id}", response_model=CommentSchema)
 def update_comment(
     comment_id: int,
@@ -156,6 +156,33 @@ def update_comment(
     return comment
 
 
+@router.put("/{comment_id}/approve", response_model=CommentSchema)
+def approve_comment(
+    comment_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """تایید یا رد نظر (فقط ادمین)"""
+    
+    # بررسی دسترسی ادمین
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="دسترسی ممنوع")
+    
+    # پیدا کردن نظر
+    comment = db.query(Comment).filter(Comment.id == comment_id).first()
+    if not comment:
+        raise HTTPException(status_code=404, detail="نظر یافت نشد")
+    
+    # تغییر وضعیت تایید
+    comment.approved = not comment.approved
+    comment.updated_at = datetime.utcnow()
+    
+    db.commit()
+    db.refresh(comment)
+    
+    return comment
+
+
 @router.delete("/{comment_id}")
 def delete_comment(
     comment_id: int,
@@ -177,30 +204,3 @@ def delete_comment(
     db.commit()
     
     return {"success": True, "message": "نظر با موفقیت حذف شد"}
-
-
-@router.get("/stats/summary")
-def get_comment_stats(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    """دریافت آمار نظرات (فقط ادمین)"""
-    
-    if not current_user.is_admin:
-        raise HTTPException(status_code=403, detail="دسترسی ممنوع")
-    
-    total_comments = db.query(Comment).count()
-    approved_comments = db.query(Comment).filter(Comment.approved == True).count()
-    pending_comments = db.query(Comment).filter(Comment.approved == False).count()
-    
-    # میانگین امتیاز
-    avg_rating = db.query(Comment).filter(Comment.approved == True).with_entities(
-        db.func.avg(Comment.rating)
-    ).scalar() or 0
-    
-    return {
-        "total": total_comments,
-        "approved": approved_comments,
-        "pending": pending_comments,
-        "average_rating": round(float(avg_rating), 2)
-    }

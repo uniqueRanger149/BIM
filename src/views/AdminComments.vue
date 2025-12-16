@@ -397,6 +397,17 @@ const saveEditComment = async () => {
 
   savingComment.value = true
   try {
+    console.log('Saving comment with data:', {
+      id: selectedComment.value.id,
+      data: {
+        name: editFormData.value.name,
+        email: editFormData.value.email,
+        content: editFormData.value.content,
+        rating: editFormData.value.rating,
+        approved: editFormData.value.approved
+      }
+    })
+
     const updated = await updateComment(selectedComment.value.id, {
       name: editFormData.value.name,
       email: editFormData.value.email,
@@ -404,6 +415,8 @@ const saveEditComment = async () => {
       rating: editFormData.value.rating,
       approved: editFormData.value.approved
     })
+    
+    console.log('Updated comment response:', updated)
     
     // به‌روزرسانی کامنت در لیست
     const index = comments.value.findIndex(c => c.id === selectedComment.value.id)
@@ -426,7 +439,8 @@ const saveEditComment = async () => {
     alert('نظر با موفقیت به‌روزرسانی شد')
   } catch (error) {
     console.error('Error updating comment:', error)
-    alert('خطا در ویرایش نظر')
+    console.error('Error response:', error.response?.data)
+    alert(`خطا در ویرایش نظر: ${error.response?.data?.detail || error.message}`)
   } finally {
     savingComment.value = false
   }
