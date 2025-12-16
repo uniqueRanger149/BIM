@@ -66,7 +66,6 @@
                   <span class="price-label">قیمت:</span>
                   <span class="price-value">{{ selectedService.price }}</span>
                 </div>
-                <button class="contact-btn">درخواست خدمت</button>
               </div>
             </div>
           </div>
@@ -87,25 +86,31 @@ const selectedService = ref(null)
 const loading = ref(true)
 
 const enrichServiceWithSlider = async (service) => {
+  let images = []
+  
+  // Try to get slider images if slider_id is available
   if (service.slider_id) {
     try {
       const response = await getSlider(service.slider_id)
       const sliderData = response?.data || response
-      return {
-        ...service,
-        images: sliderData?.images || []
+      if (sliderData?.images && Array.isArray(sliderData.images) && sliderData.images.length > 0) {
+        images = sliderData.images
       }
     } catch (error) {
-      console.error('خطا در دریافت اسلایدر:', error)
-      return {
-        ...service,
-        images: service.image ? [service.image] : []
-      }
+      console.warn(`Failed to fetch slider ${service.slider_id}:`, error)
     }
   }
+  
+  // If no images from slider, use the image field
+  if (images.length === 0 && service.image) {
+    images = [service.image]
+  }
+  
+  console.log(`Service "${service.title}" - Images:`, images)
+  
   return {
     ...service,
-    images: service.image ? [service.image] : []
+    images
   }
 }
 

@@ -1,20 +1,6 @@
 version: "3.8"
 
 services:
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: bim
-      POSTGRES_PASSWORD: bim_password
-      POSTGRES_DB: bimdb
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   backend:
     build:
       context: ./backend
@@ -22,15 +8,13 @@ services:
     volumes:
       - ./backend:/app
       - ./backend/uploads:/app/uploads
+      - ./backend/bim.db:/app/bim.db
     environment:
-      DATABASE_URL: postgresql+psycopg2://bim:bim_password@db:5432/bimdb
+      DATABASE_URL: sqlite:///./bim.db
       BACKEND_URL: http://localhost:8000
       PORT: 8000
     ports:
       - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
 
   frontend:
     image: node:18
@@ -46,6 +30,3 @@ services:
     command: sh -c "npm install --silent && npm run dev -- --host 0.0.0.0 --port 3000"
     depends_on:
       - backend
-
-volumes:
-  db_data:
