@@ -104,15 +104,16 @@
       </section>
       
       <!-- 3D Model Viewer -->
-      <section class="project-3d-viewer" v-if="project.model_url">
+      <section class="project-3d-viewer" v-if="project.iframe_url || project.model_url">
         <div class="container">
           <h2>مدل سه‌بعدی پروژه</h2>
           <div class="viewer-wrapper">
             <Viewer3D
-              :modelUrl="project.model_url"
-              :modelType="project.model_type || 'auto'"
-              :autoRotate="true"
-              backgroundColor="#f5f5f5"
+              :iframe-url="project.iframe_url"
+              :model-url="project.model_url"
+              :model-type="project.model_type || 'auto'"
+              :auto-rotate="true"
+              background-color="#f5f5f5"
             />
           </div>
         </div>

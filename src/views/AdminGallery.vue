@@ -91,10 +91,13 @@
             </div>
           </div>
 
-          <!-- Row 5: 3D Model Upload -->
+          <!-- Row 5: 3D Model or iFrame URL -->
           <div class="form-row">
             <div class="form-group">
-              <label>📦 مدل 3D (اختیاری)</label>
+              <label>📦 مدل 3D یا لینک iframe</label>
+              <div class="form-hint-text">
+                <p>گزینه 1: آپلود فایل 3D (GLB, GLTF, OBJ)</p>
+              </div>
               <div class="file-input-group">
                 <input 
                   type="file" 
@@ -105,7 +108,15 @@
                 <input v-model="formData.model_url" type="text" placeholder="یا URL مدل 3D را پیوند کنید" />
               </div>
               <div v-if="uploadingModel" class="uploading-status">درحال آپلود مدل...</div>
-              <small class="form-hint">فرمت‌های پشتیبانی: GLB, GLTF, OBJ</small>
+              <div class="form-hint-text">
+                <p style="margin-top: 12px;">گزینه 2: لینک iframe (مثال: https://b1m.ir/project/projects/pasargad/3D/)</p>
+              </div>
+              <input 
+                v-model="formData.iframe_url" 
+                type="url"
+                placeholder="لینک iframe را وارد کنید"
+                class="form-control"
+              />
             </div>
             <div class="form-group">
               <label>نوع مدل</label>
@@ -184,7 +195,8 @@ const formData = ref({
   slider_id: null,
   duration: '',
   model_url: '',
-  model_type: 'auto'
+  model_type: 'auto',
+  iframe_url: ''
 })
 
 const loadItems = async () => {

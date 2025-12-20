@@ -87,6 +87,44 @@
             </div>
           </div>
 
+          <!-- Row 6: 3D Model or iFrame URL -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>📦 مدل 3D یا لینک iframe</label>
+              <div class="form-hint-text">
+                <p>گزینه 1: آپلود فایل 3D (GLB, GLTF, OBJ)</p>
+              </div>
+              <div class="file-input-group">
+                <input 
+                  type="file" 
+                  @change="handleModelUpload" 
+                  accept=".glb,.gltf,.obj"
+                  class="file-input"
+                />
+                <input v-model="formData.model_url" type="text" placeholder="یا URL مدل 3D را پیوند کنید" />
+              </div>
+              <div v-if="uploadingModel" class="uploading-status">درحال آپلود مدل...</div>
+              <div class="form-hint-text">
+                <p style="margin-top: 12px;">گزینه 2: لینک iframe (مثال: https://b1m.ir/project/projects/pasargad/3D/)</p>
+              </div>
+              <input 
+                v-model="formData.iframe_url" 
+                type="url"
+                placeholder="لینک iframe را وارد کنید"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label>نوع مدل</label>
+              <select v-model="formData.model_type">
+                <option value="auto">تشخیص خودکار</option>
+                <option value="gltf">GLTF</option>
+                <option value="glb">GLB</option>
+                <option value="obj">OBJ</option>
+              </select>
+            </div>
+          </div>
+
           <!-- Form Actions -->
           <div class="form-actions">
             <button type="submit" class="btn-primary">{{ editingId ? 'ذخیره تغییرات' : 'ایجاد مقاله' }}</button>
@@ -145,6 +183,7 @@ const loading = ref(false)
 const showForm = ref(false)
 const editingId = ref(null)
 const uploadingImage = ref(false)
+const uploadingModel = ref(false)
 const formData = ref({
   title: '',
   excerpt: '',
@@ -152,7 +191,10 @@ const formData = ref({
   category: '',
   author: '',
   image: '',
-  slider_id: null
+  slider_id: null,
+  iframe_url: '',
+  model_url: '',
+  model_type: 'auto'
 })
 
 const loadArticles = async () => {
@@ -212,7 +254,10 @@ const closeForm = () => {
     category: '',
     author: '',
     image: '',
-    slider_id: null
+    slider_id: null,
+    iframe_url: '',
+    model_url: '',
+    model_type: 'auto'
   }
 }
 
@@ -234,6 +279,23 @@ const handleImageUpload = async (event) => {
     try { const { error: tError } = await import('../composables/useToast.js'); tError(error.response?.data?.detail || 'خطا در آپلود تصویر'); } catch {}
   } finally {
     uploadingImage.value = false
+  }
+}
+
+const handleModelUpload = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  uploadingModel.value = true
+  try {
+    const formDataFile = new FormData()
+    formDataFile.append('file', file)
+    const response = await adminService.uploadFile(formDataFile)
+    formData.value.model_url = response.url
+  } catch (error) {
+    try { const { error: tError } = await import('../composables/useToast.js'); tError(error.response?.data?.detail || 'خطا در آپلود مدل 3D'); } catch {}
+  } finally {
+    uploadingModel.value = false
   }
 }
 

@@ -20,6 +20,9 @@ class ArticleBase(BaseModel):
     read_time: Optional[str] = None
     featured: bool = False
     tags: List[str] = []
+    iframe_url: Optional[str] = None  # URL iframe برای نمایش مدل 3D
+    model_url: Optional[str] = None  # URL فایل مدل 3D
+    model_type: str = "auto"  # نوع مدل: gltf, glb, obj, auto
 
 
 class ArticleCreate(ArticleBase):
@@ -41,6 +44,9 @@ class ArticleUpdate(BaseModel):
     read_time: Optional[str] = None
     featured: Optional[bool] = None
     tags: Optional[List[str]] = None
+    iframe_url: Optional[str] = None  # URL iframe برای نمایش مدل 3D
+    model_url: Optional[str] = None  # URL فایل مدل 3D
+    model_type: Optional[str] = None  # نوع مدل
 
 
 class Article(ArticleBase):
@@ -95,6 +101,7 @@ class GalleryItemBase(BaseModel):
     technologies: List[str] = []
     model_url: Optional[str] = None  # URL فایل مدل 3D
     model_type: str = "auto"  # نوع مدل: gltf, glb, obj, auto
+    iframe_url: Optional[str] = None  # URL iframe برای نمایش مدل 3D
 
 
 class GalleryItemCreate(GalleryItemBase):
@@ -116,6 +123,7 @@ class GalleryItemUpdate(BaseModel):
     technologies: Optional[List[str]] = None
     model_url: Optional[str] = None  # URL فایل مدل 3D
     model_type: Optional[str] = None  # نوع مدل
+    iframe_url: Optional[str] = None  # URL iframe برای نمایش مدل 3D
 
 
 class GalleryItem(GalleryItemBase):
