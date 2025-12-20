@@ -8,7 +8,6 @@
     <Articles :show-view-all="true" />
     <Testimonials />
     <Certificates />
-    <ContactForm />
     <Footer />
   </div>
 </template>
@@ -23,7 +22,6 @@ import Statistics from '../components/Statistics.vue'
 import Articles from '../components/Articles.vue'
 import Testimonials from '../components/Testimonials.vue'
 import Certificates from '../components/Certificates.vue'
-import ContactForm from '../components/ContactForm.vue'
 import Footer from '../components/Footer.vue'
 
 // Inject theme from App.vue

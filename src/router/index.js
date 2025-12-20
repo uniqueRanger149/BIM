@@ -7,6 +7,7 @@ import ArticleDetailPage from '../views/ArticleDetailPage.vue'
 import ProjectDetailPage from '../views/ProjectDetailPage.vue'
 import ServiceDetailPage from '../views/ServiceDetailPage.vue'
 import CertificateDetailPage from '../views/CertificateDetailPage.vue'
+import ContactPage from '../views/ContactPage.vue'
 import GalleryArchive from '../views/GalleryArchive.vue'
 import ArticlesArchive from '../views/ArticlesArchive.vue'
 import AdminLogin from '../views/AdminLogin.vue'
@@ -95,6 +96,15 @@ const routes = [
     meta: {
       title: 'گواهینامه | مهندسین مشاور دانش‌بنیان BIM',
       description: 'گواهینامه‌ها و استانداردهای بین‌المللی'
+    }
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: ContactPage,
+    meta: {
+      title: 'تماس با ما | مهندسین مشاور دانش‌بنیان BIM',
+      description: 'فرم تماس و شماره‌های تماس شعبه‌های مختلف'
     }
   },
   {

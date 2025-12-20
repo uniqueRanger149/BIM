@@ -13,7 +13,7 @@
           <li><router-link to="/media?tab=gallery" class="nav-link" @click="closeMobileMenu">گالری</router-link></li>
           <li><router-link to="/media?tab=articles" class="nav-link" @click="closeMobileMenu">مقالات</router-link></li>
           <li><a href="#" class="nav-link" @click.prevent="handleNavClick('#certificates')">گواهینامه‌ها</a></li>
-          <li><a href="#" class="nav-link" @click.prevent="handleNavClick('#contact')">تماس</a></li>
+          <li><router-link to="/contact" class="nav-link" @click="closeMobileMenu">تماس</router-link></li>
         </ul>
 
         <div class="nav-actions">
