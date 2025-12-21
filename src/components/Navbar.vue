@@ -19,8 +19,8 @@
         <div class="nav-actions">
           <button @click="$emit('toggle-theme')" class="theme-toggle" aria-label="تغییر تم">
             <transition name="fade" mode="out-in">
-              <span v-if="isDark" key="sun" class="theme-icon">☀️</span>
-              <span v-else key="moon" class="theme-icon">🌙</span>
+              <span v-if="isDark" key="sun" class="theme-icon">☀</span>
+              <span v-else key="moon" class="theme-icon">☽</span>
             </transition>
           </button>
           

@@ -68,7 +68,7 @@
 
           <div class="card-body">
             <h3 class="card-title">{{ item.title }}</h3>
-            <p class="card-description" v-if="item.description" v-html="item.description"></p>
+            <p class="card-description" v-if="item.description">{{ item.description }}</p>
             <div class="card-tags">
               <span v-for="tech in (item.technologies || []).slice(0, 3)" :key="tech" class="tag">{{ tech }}</span>
             </div>
@@ -113,8 +113,8 @@
               <span class="stat-item">� {{ selectedItem.date || selectedItem.created_at }}</span>
             </div>
               
-              <p class="modal-description" v-if="selectedItem.description" v-html="selectedItem.description"></p>
-              <p class="modal-details" v-if="selectedItem.details" v-html="selectedItem.details"></p>
+              <p class="modal-description" v-if="selectedItem.description">{{ selectedItem.description }}</p>
+              <p class="modal-details" v-if="selectedItem.details">{{ selectedItem.details }}</p>
               
               <div class="modal-features">
                 <h3>ویژگی‌های پروژه</h3>

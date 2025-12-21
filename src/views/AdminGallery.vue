@@ -41,16 +41,15 @@
             </div>
           </div>
 
-          <!-- Row 3: Description with Quill Editor -->
+          <!-- Row 3: Description -->
           <div class="form-group full">
             <label>توضیح خلاصه</label>
-            <div class="editor-container">
-              <QuillEditor
-                v-model:content="formData.description"
-                theme="snow"
-                content-type="html"
-              />
-            </div>
+            <textarea 
+              v-model="formData.description" 
+              placeholder="توضیح کوتاه درباره پروژه"
+              rows="3"
+              required
+            ></textarea>
           </div>
 
           <!-- Row 3.5: Full Description with Quill Editor -->

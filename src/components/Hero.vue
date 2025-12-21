@@ -10,6 +10,17 @@
           :style="{ backgroundImage: `url(${img})` }"
         ></div>
         <div class="slider-overlay"></div>
+        
+        <!-- Progress Bar -->
+        <div class="slider-progress">
+          <div 
+            v-for="(img, idx) in sliderImages" 
+            :key="idx"
+            class="progress-dot"
+            :class="{ active: idx === activeIndex }"
+            @click="setActiveSlide(idx)"
+          ></div>
+        </div>
       </div>
       <div v-else class="hero-orbs">
         <div class="gradient-orb orb-1"></div>
@@ -110,6 +121,15 @@ onBeforeUnmount(() => {
 const openVideoModal = () => {
   showVideoModal.value = true
 }
+
+const setActiveSlide = (index) => {
+  activeIndex.value = index
+  // Reset timer
+  if (rotateTimer) clearInterval(rotateTimer)
+  rotateTimer = setInterval(() => {
+    activeIndex.value = (activeIndex.value + 1) % sliderImages.value.length
+  }, 6000)
+}
 </script>
 
 <style scoped>
@@ -161,6 +181,35 @@ const openVideoModal = () => {
   background: linear-gradient(135deg, rgba(0,0,0,0.35) 0%, rgba(102, 126, 234, 0.25) 100%);
   pointer-events: none;
   z-index: 1;
+}
+
+.slider-progress {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 2;
+}
+
+.progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.progress-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
+}
+
+.progress-dot.active {
+  background: #0ea5e9;
+  transform: scale(1.3);
 }
 
 .hero-orbs { 

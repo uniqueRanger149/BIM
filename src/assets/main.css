@@ -36,12 +36,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+  background: #0ea5e9;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+  background: #06b6d4;
 }
 
 /* Selection */
@@ -88,14 +88,11 @@ select {
 
 /* Utility classes */
 .gradient-bg {
-  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+  background: #0ea5e9;
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #0ea5e9;
 }
 /* Hero Section Animations */
 @keyframes slideInLeft {
@@ -218,7 +215,7 @@ select {
 .slider-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(14, 165, 233, 0.3) 100%);
+  background: rgba(0, 0, 0, 0.4);
   z-index: 1;
 }
 
@@ -240,7 +237,7 @@ select {
 .gradient-orb.orb-1 {
   width: 400px;
   height: 400px;
-  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+  background: #0ea5e9;
   top: -50px;
   left: -100px;
   animation-delay: 0s;
@@ -249,7 +246,7 @@ select {
 .gradient-orb.orb-2 {
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+  background: #06b6d4;
   bottom: 100px;
   right: 50px;
   animation-delay: 2s;
@@ -258,7 +255,7 @@ select {
 .gradient-orb.orb-3 {
   width: 350px;
   height: 350px;
-  background: linear-gradient(135deg, #0ea5e9 0%, #4facfe 100%);
+  background: #0ea5e9;
   top: 50%;
   right: -100px;
   animation-delay: 4s;
@@ -320,8 +317,9 @@ select {
   font-weight: 800;
   line-height: 1.2;
   max-width: 900px;
-  animation: slideInLeft 0.9s ease-out 0.1s both;
+  animation: slideInLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both;
   letter-spacing: -0.02em;
+  transform: translateX(0);
 }
 
 .hero-subtitle {
@@ -329,15 +327,18 @@ select {
   line-height: 1.8;
   max-width: 600px;
   opacity: 0.95;
-  animation: slideInLeft 0.9s ease-out 0.2s both;
+  animation: slideInLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
   font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateX(0);
 }
 
 .hero-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  animation: slideUp 0.8s ease-out 0.3s both;
+  animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s both;
+  transform: translateY(0);
 }
 
 .btn {
@@ -355,7 +356,7 @@ select {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+  background: #0ea5e9;
   color: #fff;
   box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
 }
